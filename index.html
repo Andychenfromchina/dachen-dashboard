@@ -1,65 +1,78 @@
-<!DOCTYPE html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>大陈日更 · 运营看板</title>
-<style>
-:root{--ink:#1f2a44;--ink2:#5a6678;--accent:#ff7a1a;--bg:#f6f7f9;--card:#fff;--line:#e8ebf0;--up:#1aa564;--down:#e23b3b}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang SC","Hiragino Sans GB",sans-serif;line-height:1.5}
-.wrap{max-width:920px;margin:0 auto;padding:24px 18px 60px}
-.top{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;border-bottom:3px solid var(--ink);padding-bottom:12px}
-.top h1{font-size:22px;margin:0;font-weight:800}.top .accent{color:var(--accent)}
-.meta{color:var(--ink2);font-size:13px}
-h2{font-size:15px;letter-spacing:.05em;margin:30px 0 12px;font-weight:800;border-left:4px solid var(--accent);padding-left:10px}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
-.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
-.kpi-label{font-size:12px;color:var(--ink2)}.kpi-val{font-size:28px;font-weight:800;margin:2px 0}.kpi-val.warn{color:var(--down)}
-.kpi-sub{font-size:12px;color:var(--ink2)}.up{color:var(--up);font-weight:700}.down{color:var(--down);font-weight:700}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px}
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>大陈日更 · 运营看板</title><style>
+:root{--brand:#1a56db;--brand2:#0b3aa8;--accent:#06b6d4;--bg:#f4f6fb;--card:#fff;--ink:#14181f;--ink2:#66707e;--line:#e6e9f0;--ok:#12a150;--warn:#f59e0b;--bad:#e5484d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB",sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:960px;margin:0 auto;padding:24px 18px 64px}.num,.kv,.spark-last{font-variant-numeric:tabular-nums}.muted{color:var(--ink2);font-size:12px}
+.top{background:linear-gradient(120deg,var(--brand2),var(--brand));color:#fff;border-radius:16px;padding:20px 22px;box-shadow:0 6px 20px rgba(26,86,219,.22)}
+.top h1{margin:0;font-size:22px;font-weight:800;letter-spacing:.01em}.top .sub{opacity:.85;font-size:13px;margin-top:6px}.bolt{color:#ffd54a}
+h2{font-size:13px;letter-spacing:.08em;color:var(--ink2);font-weight:800;margin:28px 0 12px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+h2::before{content:"";width:14px;height:14px;border-radius:4px;background:var(--brand)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(146px,1fr));gap:12px}
+.kpi{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--brand);border-radius:12px;padding:14px 15px;box-shadow:0 1px 3px rgba(20,30,60,.05);transition:transform .12s,box-shadow .12s}
+.kpi:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(20,30,60,.10)}
+.kpi.ok{border-top-color:var(--ok)}.kpi.warn{border-top-color:var(--warn)}.kpi.bad{border-top-color:var(--bad)}
+.kl{font-size:12px;color:var(--ink2);display:flex;align-items:center;gap:4px}.kv{font-size:28px;font-weight:800;margin:3px 0}.kpi.bad .kv{color:var(--bad)}.kpi.warn .kv{color:var(--warn)}.ks{font-size:12px;color:var(--ink2)}
+.up{color:var(--ok);font-weight:700}.dn{color:var(--bad);font-weight:700}
+.q{display:inline-flex;width:14px;height:14px;border-radius:50%;background:var(--line);color:var(--ink2);font-size:10px;align-items:center;justify-content:center;cursor:help;font-weight:700}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:0 1px 3px rgba(20,30,60,.05);margin-bottom:14px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:680px){.two{grid-template-columns:1fr}}
-.bar-row{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:13px}.bar-k{width:64px;color:var(--ink2)}
-.bar-track{flex:1;height:8px;background:#eef1f5;border-radius:5px;overflow:hidden}.bar-fill{display:block;height:100%;background:var(--accent)}.bar-v{width:48px;text-align:right;font-variant-numeric:tabular-nums}
-table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line)}th{color:var(--ink2);font-weight:600}
-.callout{background:#fff6ef;border:1px solid #ffd9b8;border-radius:10px;padding:10px 14px;font-size:13px;margin-top:10px}
-.foot{color:var(--ink2);font-size:12px;margin-top:30px;border-top:1px solid var(--line);padding-top:12px}
-.pill{display:inline-block;background:var(--ink);color:#fff;border-radius:20px;padding:3px 12px;font-size:13px;font-weight:700;margin-right:6px}
+.ct{display:flex;font-weight:700;font-size:13px;margin-bottom:10px;align-items:center;gap:6px}
+.stat4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;text-align:center}@media(max-width:560px){.stat4{grid-template-columns:repeat(2,1fr)}}
+.stat4 .v{font-size:20px;font-weight:800}.stat4 .l{font-size:12px;color:var(--ink2)}
+.bar{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:13px}.bk{width:62px;color:var(--ink2)}.bt{flex:1;height:8px;background:#eef1f7;border-radius:5px;overflow:hidden}.bf{display:block;height:100%}.bv{width:50px;text-align:right;font-variant-numeric:tabular-nums}
+.call{background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:11px 14px;font-size:13px;margin-top:12px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:8px 8px}th{color:var(--ink2);font-weight:600;border-bottom:2px solid var(--line)}td{border-bottom:1px solid var(--line)}tbody tr:nth-child(even){background:#fafbfe}td.num{text-align:right;font-variant-numeric:tabular-nums}
+.pill{display:inline-block;background:var(--brand);color:#fff;border-radius:20px;padding:4px 13px;font-size:12px;font-weight:700;margin:0 6px 6px 0}.pill.alt{background:var(--accent)}.pill.ghost{background:#fff;color:var(--brand);border:1px solid var(--brand)}
+.foot{color:var(--ink2);font-size:12px;margin-top:30px;border-top:1px solid var(--line);padding-top:14px}
 </style></head><body><div class="wrap">
 
-<div class="top"><h1>大陈日更 · <span class="accent">运营看板</span></h1>
-<div class="meta">更新 2026-06-18 07:09 · 周期 2026-06-11 至 2026-06-17 · 每晚自动刷新</div></div>
+<div class="top"><h1><span class="bolt">⚡</span> 大陈日更 · 运营看板</h1>
+<div class="sub">更新 2026-06-18 07:25 · 统计周期 2026-06-11 至 2026-06-17 · 每晚 21:30 复盘后自动刷新</div></div>
 
 <h2>抖音 · 智者大陈</h2>
-<div class="kpis">
-<div class="kpi"><div class="kpi-label">总粉丝</div><div class="kpi-val warn">993</div><div class="kpi-sub">7日净增 <span class="down">▼ -6</span></div></div>
-<div class="kpi"><div class="kpi-label">7日播放</div><div class="kpi-val">2714</div><div class="kpi-sub"></div></div>
-<div class="kpi"><div class="kpi-label">完播率</div><div class="kpi-val">16.90%</div><div class="kpi-sub">15s短视频核心指标</div></div>
-<div class="kpi"><div class="kpi-label">互动指数</div><div class="kpi-val warn">0.48%</div><div class="kpi-sub">健康线≈2%</div></div>
-<div class="kpi"><div class="kpi-label">昨日播放</div><div class="kpi-val">134</div><div class="kpi-sub">主页访问 3</div></div>
+<div class="grid">
+<div class="kpi bad"><div class="kl">总粉丝</div><div class="kv">993</div><div class="ks">7日净增 <span class="dn">▼ -6</span></div></div>
+<div class="kpi "><div class="kl">7日播放</div><div class="kv">2714</div><div class="ks">投稿 13 条</div></div>
+<div class="kpi "><div class="kl">5s完播率<span class="q" title="条均5秒完播率,越高越好">?</span></div><div class="kv">34.94%</div><div class="ks">看完前5秒比例</div></div>
+<div class="kpi bad"><div class="kl">2s跳出率<span class="q" title="前2秒就划走的比例,15s短视频的命门,行业好的&lt;25%">?</span></div><div class="kv">43.08%</div><div class="ks">最大短板·越低越好</div></div>
+<div class="kpi bad"><div class="kl">互动指数<span class="q" title="赞评分享综合,&lt;1%偏低">?</span></div><div class="kv">0.48%</div><div class="ks">健康线≈2%</div></div>
+<div class="kpi "><div class="kl">条均时长</div><div class="kv">7.65秒</div><div class="ks">中位播放 46</div></div>
 </div>
-<div class="card" style="margin-top:14px"><b style="font-size:13px">粉丝趋势</b><br><span class="muted">积累中(需≥2天数据)</span>　<span class="muted" style="font-size:12px">· 7日播放</span> <span class="muted">积累中(需≥2天数据)</span></div>
+<div class="card" style="margin-top:14px"><div class="ct">📈 趋势(粉丝 / 7日播放)</div>
+<div style="display:flex;gap:28px;flex-wrap:wrap;align-items:center"><span class="muted">粉丝</span> <svg width="240" height="48" viewBox="0 0 240 48" preserveAspectRatio="none" class="spark"><polygon points="0,48 0.0,45.0 240.0,45.0 240,48" fill="#1a56db" opacity="0.08"/><polyline points="0.0,45.0 240.0,45.0" fill="none" stroke="#1a56db" stroke-width="2"/><circle cx="240.0" cy="45.0" r="3" fill="#1a56db"/></svg><b class="spark-last">993</b> <span class="muted">7日播放</span> <svg width="240" height="48" viewBox="0 0 240 48" preserveAspectRatio="none" class="spark"><polygon points="0,48 0.0,45.0 240.0,45.0 240,48" fill="#06b6d4" opacity="0.08"/><polyline points="0.0,45.0 240.0,45.0" fill="none" stroke="#06b6d4" stroke-width="2"/><circle cx="240.0" cy="45.0" r="3" fill="#06b6d4"/></svg><b class="spark-last">2714</b></div></div>
+
+<h2>投稿表现(近 57 条)</h2>
+<div class="card"><div class="stat4">
+<div><div class="v">85.96%</div><div class="l">条均点击率</div></div>
+<div><div class="v">46</div><div class="l">播放量中位数</div></div>
+<div><div class="v">542</div><div class="l">最高播放</div></div>
+<div><div class="v">1</div><div class="l">最低播放</div></div>
+</div><div class="muted" style="margin-top:10px">🏆 最高播放:它把拒绝总结成同意</div></div>
 
 <h2>粉丝画像(抖音)</h2>
 <div class="two">
-<div class="card"><b style="font-size:13px">兴趣分布</b><div class="bar-row"><span class="bar-k">二次元</span><span class="bar-track"><span class="bar-fill" style="width:64%"></span></span><span class="bar-v">29%</span></div><div class="bar-row"><span class="bar-k">游戏</span><span class="bar-track"><span class="bar-fill" style="width:48%"></span></span><span class="bar-v">22%</span></div><div class="bar-row"><span class="bar-k">随拍</span><span class="bar-track"><span class="bar-fill" style="width:46%"></span></span><span class="bar-v">21%</span></div><div class="bar-row"><span class="bar-k">亲子</span><span class="bar-track"><span class="bar-fill" style="width:33%"></span></span><span class="bar-v">15%</span></div><div class="bar-row"><span class="bar-k">剧情</span><span class="bar-track"><span class="bar-fill" style="width:20%"></span></span><span class="bar-v">9%</span></div><div class="bar-row"><span class="bar-k">美食</span><span class="bar-track"><span class="bar-fill" style="width:4%"></span></span><span class="bar-v">2%</span></div></div>
-<div class="card"><b style="font-size:13px">地域分布</b><div class="bar-row"><span class="bar-k">广东</span><span class="bar-track"><span class="bar-fill" style="width:24%"></span></span><span class="bar-v">11%</span></div><div class="bar-row"><span class="bar-k">山东</span><span class="bar-track"><span class="bar-fill" style="width:15%"></span></span><span class="bar-v">7%</span></div><div class="bar-row"><span class="bar-k">河北</span><span class="bar-track"><span class="bar-fill" style="width:15%"></span></span><span class="bar-v">7%</span></div><div class="bar-row"><span class="bar-k">湖南</span><span class="bar-track"><span class="bar-fill" style="width:13%"></span></span><span class="bar-v">6%</span></div><div class="bar-row"><span class="bar-k">河南</span><span class="bar-track"><span class="bar-fill" style="width:13%"></span></span><span class="bar-v">6%</span></div><div class="bar-row"><span class="bar-k">广西</span><span class="bar-track"><span class="bar-fill" style="width:11%"></span></span><span class="bar-v">5%</span></div></div>
+<div class="card"><div class="ct">兴趣分布</div><div class="bar"><span class="bk">二次元</span><span class="bt"><span class="bf" style="width:70%;background:#1a56db"></span></span><span class="bv">29%</span></div><div class="bar"><span class="bk">游戏</span><span class="bt"><span class="bf" style="width:53%;background:#1a56db"></span></span><span class="bv">22%</span></div><div class="bar"><span class="bk">随拍</span><span class="bt"><span class="bf" style="width:50%;background:#1a56db"></span></span><span class="bv">21%</span></div><div class="bar"><span class="bk">亲子</span><span class="bt"><span class="bf" style="width:36%;background:#1a56db"></span></span><span class="bv">15%</span></div><div class="bar"><span class="bk">剧情</span><span class="bt"><span class="bf" style="width:22%;background:#1a56db"></span></span><span class="bv">9%</span></div><div class="bar"><span class="bk">美食</span><span class="bt"><span class="bf" style="width:5%;background:#1a56db"></span></span><span class="bv">2%</span></div></div>
+<div class="card"><div class="ct">地域分布</div><div class="bar"><span class="bk">广东</span><span class="bt"><span class="bf" style="width:26%;background:#06b6d4"></span></span><span class="bv">11%</span></div><div class="bar"><span class="bk">山东</span><span class="bt"><span class="bf" style="width:17%;background:#06b6d4"></span></span><span class="bv">7%</span></div><div class="bar"><span class="bk">河北</span><span class="bt"><span class="bf" style="width:17%;background:#06b6d4"></span></span><span class="bv">7%</span></div><div class="bar"><span class="bk">湖南</span><span class="bt"><span class="bf" style="width:14%;background:#06b6d4"></span></span><span class="bv">6%</span></div><div class="bar"><span class="bk">河南</span><span class="bt"><span class="bf" style="width:14%;background:#06b6d4"></span></span><span class="bv">6%</span></div><div class="bar"><span class="bk">广西</span><span class="bt"><span class="bf" style="width:12%;background:#06b6d4"></span></span><span class="bv">5%</span></div></div>
 </div>
-<div class="callout">⚠️ <b>受众错配</b>:粉丝以二次元/游戏/亲子等泛娱乐为主,<b>非目标(中小企业老板)</b>。这是涨粉为负、线索为0的根因之一——转向 GEO 获客内容后,目标是把这批泛娱乐流量换成老板客户。</div>
+<div class="call">⚠️ <b>受众错配</b>:粉丝以二次元/游戏/亲子等泛娱乐为主,<b>非目标(中小企业老板)</b>——这是涨粉为负、线索为0的根因之一。转向 GEO 获客内容后,目标是把泛娱乐流量逐步换成老板客户。</div>
 
 <h2>视频号 · 智者陈永俊</h2>
-<div class="kpis">
-<div class="kpi"><div class="kpi-label">关注者</div><div class="kpi-val">49</div><div class="kpi-sub"></div></div>
-<div class="kpi"><div class="kpi-label">视频数</div><div class="kpi-val">—</div><div class="kpi-sub"></div></div>
+<div class="grid">
+<div class="kpi "><div class="kl">关注者</div><div class="kv">49</div><div class="ks"></div></div>
+<div class="kpi "><div class="kl">视频数</div><div class="kv">—</div><div class="ks"></div></div>
 </div>
-
+<div class="call">视频号 statistic 页为图表/异步渲染,部分指标 innerText 抓不到(已降级显示 —),v2 再补。</div>
 
 <h2>今日复盘结论</h2>
 <div class="card">
 <span class="pill">明日支柱 老板IP</span>
-<span class="pill">CTA 互动型</span>
+<span class="pill alt">CTA 互动型</span>
 
-<p style="font-size:13px;margin:10px 0 4px">近14条均播放 <b>174</b> · 评论合计 <b>1</b> · 赢家:它算钱十次错三次</p>
-<p style="font-size:13px;margin:4px 0">领取物钩子:《70人公司在用的AI工具清单》</p>
-<table><tr><th>母题支柱</th><th>条数</th><th>均播放</th><th>评论</th></tr><tr><td>避坑</td><td>51</td><td>128</td><td>2</td></tr><tr><td>老板IP</td><td>1</td><td>34</td><td>0</td></tr><tr><td>AI降本提效</td><td>4</td><td>23</td><td>0</td></tr><tr><td>GEO/AI获客实战</td><td>1</td><td>15</td><td>0</td></tr></table>
+<p style="font-size:13px;margin:12px 0 4px">近 <b>14</b> 条均播放 <b>174</b> · 评论合计 <b>1</b> · 赢家:它算钱十次错三次</p>
+<p style="font-size:13px;margin:0 0 10px">留资钩子:《70人公司在用的AI工具清单》</p>
+<table><thead><tr><th>母题支柱</th><th>条数</th><th class="num">均播放</th><th class="num">评论</th></tr></thead><tbody><tr><td>避坑</td><td>51</td><td class="num">128</td><td class="num">2</td></tr><tr><td>老板IP</td><td>1</td><td class="num">34</td><td class="num">0</td></tr><tr><td>AI降本提效</td><td>4</td><td class="num">23</td><td class="num">0</td></tr><tr><td>GEO/AI获客实战</td><td>1</td><td class="num">15</td><td class="num">0</td></tr></tbody></table>
 </div>
 
-<div class="foot">数据源:抖音创作者中心 + 视频号助手(每晚 21:30 复盘后自动抓取渲染)。本页仅含运营指标,不含账号凭证。<br>
-机器自动生成 · 数据有平台延迟(抖音每日12点更新前一日)。</div>
+<div class="foot">数据源:抖音创作者中心 + 视频号助手,每晚 21:30 复盘后自动抓取渲染。本页仅含运营指标,不含账号凭证。<br>
+机器自动生成 · 抖音数据每日 12 点更新前一日 · 设计参考 bszn 科技蓝专业数据风。</div>
 </div></body></html>
